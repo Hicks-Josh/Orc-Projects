@@ -35,18 +35,34 @@ import class BufferedReader = "java.io.BufferedReader"
 val f = File("Person.dat")
 val reader = BufferedReader(FileReader(f))
 
+{-
+ - Originally I wanted to use an array for the data structure but aside from it
+  - being immutable, it also can only hold primitive types,
+  - therfore in order to hold a `Person` data type I'll need to go with
+   - something like a list.
+ -}
+
+val l = []
+def initList(i) =
+    if (i <: 7) then
+        val str = reader.readLine()
+        l(i) := i >> initList(i+1)
+        else signal
+        
+initList(0) >> l(0)? >> l(1)?
+{-
 val a = Array(7)
 def init(i) =
      if (i <: 7) then
         val str = reader.readLine()
-        a(i) := Person(str.split(",")(0), str.split(",")(1)) >> init(i+1)
+        a(i) := new Person(str.split(",")(0), str.split(",")(1)) >> init(i+1)
         else signal
 
 init(0) >>
 a(0).read() >Person(n1,_)>
 a(1)?.get >Person(n2,_)>
 (n1 | n2)
-
+-}
 
 
 
