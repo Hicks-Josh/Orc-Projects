@@ -24,46 +24,35 @@
  -
  - Implementation Details:
  -}
-
-def Person(name, age) =
-    def getName() = name
-    def getAge() = age
-
+val fileName = "Person.dat"
 import class File = "java.io.File"
 import class FileReader = "java.io.FileReader"
 import class BufferedReader = "java.io.BufferedReader"
-val f = File("Person.dat")
-val reader = BufferedReader(FileReader(f))
+val file = File(fileName)
+val reader = BufferedReader(FileReader(file))
+
+{- Creates a Person data type -} 
+type Person = Person(_,_)
+
+def initializePersonList(index, list) =
+    if (index <: 7) then
+        val str = reader.readLine()
+        str:list >> initializePersonList(index+1, list)
+    else signal
+
 
 {-
- - Originally I wanted to use an array for the data structure but aside from it
-  - being immutable, it also can only hold primitive types,
-  - therfore in order to hold a `Person` data type I'll need to go with
-   - something like a list.
+ - by using the >> operator,
+ - it makes everything happen in sequence
+ - my issue was that I was concatenating the list,
+ - then calling the function again,
+ - the issue was that I wasn't assigning list to the new list,
+ - so it was just passing an empty list with every call
  -}
+def initializeList(index, list) =
+    if (index <: 7) then initializeList(index +1, reader.readLine():list)
+    else list 
 
-val l = []
-def initList(i) =
-    if (i <: 7) then
-        val str = reader.readLine()
-        l(i) := i >> initList(i+1)
-        else signal
-        
-initList(0) >> l(0)? >> l(1)?
-{-
-val a = Array(7)
-def init(i) =
-     if (i <: 7) then
-        val str = reader.readLine()
-        a(i) := new Person(str.split(",")(0), str.split(",")(1)) >> init(i+1)
-        else signal
-
-init(0) >>
-a(0).read() >Person(n1,_)>
-a(1)?.get >Person(n2,_)>
-(n1 | n2)
--}
-
-
-
+val personList = initializeList(0, [])
+personList
 
