@@ -34,12 +34,6 @@ val reader = BufferedReader(FileReader(file))
 {- Creates a Person data type -} 
 type Person = Person(_,_)
 
-def initializePersonList(index, list) =
-    if (index <: 7) then
-        val str = reader.readLine()
-        str:list >> initializePersonList(index+1, list)
-    else signal
-
 
 {-
  - by using the >> operator,
