@@ -31,17 +31,19 @@ import class BufferedReader = "java.io.BufferedReader"
 val file = File(fileName)
 val reader = BufferedReader(FileReader(file))
 
+{-
+ - a Person site which holds a name and age.
+ - I can use the `suppliedAge :: Number` here to
+ - give a type hint for the parameter,
+ - so when I pass in a string of age, it will automatically convert
+ - it to the proper data type
+ -}
 def class Person(suppliedName, suppliedAge :: Number) =
     val name = suppliedName
     val age = suppliedAge
 
     def getName() = name
-    {-
-     - Read() converts the string to it's appropriate data type
-     - I was having issues converting it when initializing the class
-     - so my solution is to cast it when it's going out
-     -}
-    def getAge() = Read(age)
+    def getAge() = age
 
     stop
 
@@ -57,4 +59,4 @@ def initializePersonList(index, list) =
 
 
 val personList = initializePersonList(0,[])
-index(personList, 0).getName()
+index(personList, 0).getAge()
