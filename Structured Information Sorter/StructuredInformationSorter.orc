@@ -3,7 +3,7 @@
  - 
  - Write a program that keeps track of information about Persons.
  - A Person has a character string attribute called name and an
- - integer integer attribute called age.  If your language permits,
+ - integer attribute called age.  If your language permits,
  - you should create an abstract data type for this kind of information.
  - If your language does not have a mechanism for building abstract
  - datatypes such as a record, struct, class, etc., improvise.
@@ -31,22 +31,30 @@ import class BufferedReader = "java.io.BufferedReader"
 val file = File(fileName)
 val reader = BufferedReader(FileReader(file))
 
-{- Creates a Person data type -} 
-type Person = Person(_,_)
+def class Person(suppliedName, suppliedAge :: Number) =
+    val name = suppliedName
+    val age = suppliedAge
 
+    def getName() = name
+    {-
+     - Read() converts the string to it's appropriate data type
+     - I was having issues converting it when initializing the class
+     - so my solution is to cast it when it's going out
+     -}
+    def getAge() = Read(age)
 
-{-
- - by using the >> operator,
- - it makes everything happen in sequence
- - my issue was that I was concatenating the list,
- - then calling the function again,
- - the issue was that I wasn't assigning list to the new list,
- - so it was just passing an empty list with every call
- -}
-def initializeList(index, list) =
-    if (index <: 7) then initializeList(index +1, reader.readLine():list)
+    stop
+
+-- Reads the next line in the reader and conferts it into a Person site 
+def getPerson() =
+    val line = arrayToList(reader.readLine().split(","))
+    Person(index(line, 0), index(line, 1)) 
+
+-- recursively fills the provided list with Person sites
+def initializePersonList(index, list) =
+    if (index <: 7) then initializePersonList(index+1, getPerson():list)
     else list 
 
-val personList = initializeList(0, [])
-personList
 
+val personList = initializePersonList(0,[])
+index(personList, 0).getName()
