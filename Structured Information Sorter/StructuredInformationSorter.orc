@@ -24,6 +24,11 @@
  -
  - Implementation Details:
  -}
+
+ {-
+  - This sets up the .dat file and various imports needed to
+  - read the Person.dat file
+  -}
 val fileName = "Person.dat"
 import class File = "java.io.File"
 import class FileReader = "java.io.FileReader"
@@ -33,30 +38,49 @@ val reader = BufferedReader(FileReader(file))
 
 {-
  - a Person site which holds a name and age.
- - I can use the `suppliedAge :: Number` here to
+ - I can use the `age :: Number` here to
  - give a type hint for the parameter,
  - so when I pass in a string of age, it will automatically convert
  - it to the proper data type
+ -
+ - on a side note, it is sometimes a little janky with type hints
+ - so I specified `Read(age)` to make sure the age is converted to a number
  -}
-def class Person(suppliedName, suppliedAge :: Number) =
-    val name = suppliedName
-    val age = suppliedAge
-
+def class Person(name, age:: Number) =
     def getName() = name
-    def getAge() = age
-
+    def getAge() = Read(age)
     stop
 
--- Reads the next line in the reader and conferts it into a Person site 
+-- Reads the next line in the reader and converts it into a Person site 
 def getPerson() =
     val line = arrayToList(reader.readLine().split(","))
     Person(index(line, 0), index(line, 1)) 
 
--- recursively fills the provided list with Person sites
-def initializePersonList(index, list) =
-    if (index <: 7) then initializePersonList(index+1, getPerson():list)
-    else list 
+-- recursively fills the provided array with Person sites
+def initializePersonArray(index, array) =
+    if (index <: 7) then array(index) := getPerson() >> initializePersonArray(index+1, array)
+    else array 
+
+-- grabs the indexed value of the array, and gets the average.
+-- I recognize that this could be done with a lambda but I'm having some issues
+-- figuring that out
+def ageAverage(index, array, average) =
+    if (index <: 7) then ageAverage(index+1, array, average+array(index)?.getAge())
+    else average / index
+
+--val personList = initializePersonList(0,[])
+--upto(7) >i> personArray(i)?.getAge()
 
 
-val personList = initializePersonList(0,[])
-index(personList, 0).getAge()
+val personArray = initializePersonArray(0, Array(7))
+val nameArray = Array(7)
+
+-- @TODO use a map funtion
+for(0, nameArray.length?) >i>
+nameArray(i) := personArray(i)?.getName() >>
+stop
+;
+
+sort(arrayToList(nameArray)) | "Average age: " + ageAverage(0, personArray, 0)
+
+
