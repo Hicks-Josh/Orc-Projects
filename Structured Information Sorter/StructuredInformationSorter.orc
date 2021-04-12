@@ -75,12 +75,8 @@ def ageAverage(index, array, average) =
 val personArray = initializePersonArray(0, Array(7))
 val nameArray = Array(7)
 
--- @TODO use a map funtion
+-- @TODO use a map function
 for(0, nameArray.length?) >i>
 nameArray(i) := personArray(i)?.getName() >>
 stop
-;
-
-sort(arrayToList(nameArray)) | "Average age: " + ageAverage(0, personArray, 0)
-
-
+; sort(arrayToList(nameArray)) | "Average age: " + ageAverage(0, personArray, 0)

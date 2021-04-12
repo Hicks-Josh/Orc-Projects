@@ -59,42 +59,44 @@ def checkIfBody()  =
 
 def checkIfProduction() =
     val isProduction = Ref(false)
-    -- there is the Iff operator that I could use instead of readingBodies = false
+    -- there is the Iff operator that I could use instead of 
+    -- readingBodies = false
     -- but this was sleeker to use
-    Ift (readingBodies? = false) >> 
+    (Ift (readingBodies? = false) >> 
         isProduction := true >>
         leftHandSideSymbol := Symbol(currentSymbol) >>
         symbolTable.leftHandSideSymbol := [] >>
         readingBodies := true >>
         -- if this is the first left hand side we've seen
         -- then it's also the start symbol for the grammar
-        Ift (startSymbol = null) >> startSymbol := leftHandSideSymbol
-    ;isProduction?
+        Ift (startSymbol = null) >> startSymbol := leftHandSideSymbol)
+    isProduction?
 
 
 -- Otherwise we're in the body of the production
 def productionBody() =
     -- If the symbol is the end symbol, then we;re done reading a
     -- particular production body
-    if (currentSymbol.is(BODY_END) then
-        symbolTable.leftHandSideSymbol := symbolTable.leftHandSideSymbol?:symbolList
+    if (currentSymbol.is(BODY_END)) then
+        symbolTable.leftHandSideSymbol := symbolTable.leftHandSideSymbol?:symbolList >>
         symbolList := []
     -- Otherwise not at the end, add this symbol for the next production
     -- body we encounter
     else
         -- If the symbol is the literal string "\n" we'll turn that
         -- into an actual newline, otherwise just add the symbol to the list
-        if (currentSymbol.is("\n") then symbolList := symbolList:Symbol("\n")
+        if (currentSymbol.is("\n")) then symbolList := symbolList:Symbol("\n")
         else symbolList := symbolList:Symbol(currentSymbol)
 
 
 def loopThroughFile(readingAProduction) =
-    currentSymbol := reader.readLine()
+    currentSymbol := reader.readLine() >>
 
+    Ift (currentSymbol = null) >> signal
     -- Otherwise we must be reading a production
     -- so this is the bead or bodies of a production
     Iff (checkIfBody()) >> Iff(checkIfProduction()) >> productionBody()
-        
+    ;
         
 
 -- loopThroughFile(readingAProduction-false
